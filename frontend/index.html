@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="stylesheet"
+      href="./elementUI.css"
+    />
+  </head>
+  <style>
+    p{
+    margin: 0;
+    }
+    .custom-tree-container{
+      display: flex;
+      width: 100vw;
+
+    }
+    .block{
+      flex: 1;
+      border: 1px solid #eff2f6;
+    
+    }
+    .custom-tree-node {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+      padding-right: 8px;
+    }
+    .select{
+      text-align: center;
+    }
+    .btn-box{
+      margin-top: 20px;
+      width: 100vw;
+      display: flex;
+    justify-content: center;
+    }
+  </style>
+  <body>
+    <div id="app">
+      <el-button  style="width:100vw;border-radius: 0;" type="primary">Generate remainning courses list</el-button>
+      <div class="custom-tree-container">
+      
+        <div class="block">
+          <div class="select">
+           
+          <el-select style="width:100%" v-model="value" filterable placeholder="请选择">
+          </div>
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          <el-tree
+          :data="data"
+          show-checkbox
+          node-key="id"
+          default-expand-all
+          :expand-on-click-node="false"
+        >
+          <span class="custom-tree-node" slot-scope="{ node, data }">
+               <span>{{node.label}}</span>
+            
+             </span>
+        </el-tree>
+        </div>
+        <div class="block" style="border-left: 0;">
+          <p style="height: 38px;display: flex;justify-content: center;align-items: center; border-bottom: 1px solid #eff2f6;">given recommand order for the rest of course</p>
+          <el-tree
+            :data="data"
+          
+            node-key="id"
+            default-expand-all
+            :expand-on-click-node="false"
+          >
+
+            <span class="custom-tree-node" slot-scope="{ node, data }">
+              <span>{{ node.label }}</span>
+              <el-button
+              type="text"
+              size="mini"
+              @click="() => remove(node, data)">
+              Delete
+            </el-button>
+            </span>
+          </el-tree>
+        </div>
+      </div>
+      <div class="btn-box">
+        <el-button style="margin-right:10px">SAVE</el-button>
+        <el-button type="primary">LOAD</el-button>
+      </div>
+    </div>
+  </body>
+  <script src="./vue.js"></script>
+  <script src="./elementUI.js"></script>
+  <script>
+    new Vue({
+      el: "#app",
+      data: function () {
+        const data = [{
+        id: 1,
+        label: 'level 1',
+        children: [{
+          id: 4,
+          label: 'level 1-1',
+          children: [{
+            id: 9,
+            label: 'level 1-1-1'
+          }, {
+            id: 10,
+            label: 'level 1-1-2'
+          }]
+        }]
+      }, {
+        id: 2,
+        label: 'level 2',
+        children: [{
+          id: 5,
+          label: 'level 2-1'
+        }, {
+          id: 6,
+          label: 'level 2-2'
+        }]
+      }, {
+        id: 3,
+        label: 'level 3',
+        children: [{
+          id: 7,
+          label: 'level 3-1'
+        }, {
+          id: 8,
+          label: 'level 3-2'
+        }]
+      }];
+      return {
+        data: JSON.parse(JSON.stringify(data)),
+        data: JSON.parse(JSON.stringify(data)),
+        options: [{
+          value: '选项1',
+          label: '黄金糕'
+        }, {
+          value: '选项2',
+          label: '双皮奶'
+        }, {
+          value: '选项3',
+          label: '蚵仔煎'
+        }, {
+          value: '选项4',
+          label: '龙须面'
+        }, {
+          value: '选项5',
+          label: '北京烤鸭'
+        }],
+        value: ''
+      }
+      },
+      methods: {
+      append(data) {
+        const newChild = { id: id++, label: 'testtest', children: [] };
+        if (!data.children) {
+          this.$set(data, 'children', []);
+        }
+        data.children.push(newChild);
+      },
+
+      remove(node, data) {
+        const parent = node.parent;
+        const children = parent.data.children || parent.data;
+        const index = children.findIndex(d => d.id === data.id);
+        children.splice(index, 1);
+      },
+
+      // renderContent(h, { node, data, store }) {
+      //   return (
+      //     <span class="custom-tree-node">
+      //       <span>{node.label}</span>
+      //       <span>
+      //         <el-button size="mini" type="text" on-click={ () => this.append(data) }>Append</el-button>
+      //         <el-button size="mini" type="text" on-click={ () => this.remove(node, data) }>Delete</el-button>
+      //       </span>
+      //     </span>);
+      // }
+    }
+    });
+  </script>
+</html>
