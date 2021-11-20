@@ -1,0 +1,27 @@
+[
+	{
+		"MajorName": "Computer Science",
+		"Programs": [
+			"Bachelor of Computer Science (General)",
+			"Bachelor of Computer Science (Honours)",
+			"Bachelor of Computer Science (Honours applied Computing)",
+			"Bachelor of Science(Honours Computer Infomation Systems)",
+			"Bachelor of Science(Honours Computer Science with Software Engineering Specilization)"
+		]
+	},
+	{	
+		"MajorName":"Psychology",
+		"Programs": [
+			"General Psychology",
+			"General Child Psychology",
+			"Honours Psychology",
+			"Honours Psychology with Thesis",
+			"Honours Developmental Psychology",
+			"Honours Developmental Psychology with Thesis",
+			"Combined Honours Psychology Programs",
+			"Combined Honours Programs in Developmental Psychology",
+			"Combined Honours Programs in Developmental Psychology with Thesis",
+			"Major and Minor Concentrations - Bachelor of Interdisciplinary Arts and Science (IAS) - Psychology (Thesis) and Psychology"
+		]
+	}
+]
