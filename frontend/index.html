@@ -2,24 +2,19 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <link
-      rel="stylesheet"
-      href="./elementUI.css"
-    />
+    <link rel="stylesheet" href="./elementUI.css" />
   </head>
   <style>
-    p{
-    margin: 0;
+    p {
+      margin: 0;
     }
-    .custom-tree-container{
+    .custom-tree-container {
       display: flex;
       width: 100vw;
-
     }
-    .block{
+    .block {
       flex: 1;
       border: 1px solid #eff2f6;
-    
     }
     .custom-tree-node {
       flex: 1;
@@ -29,70 +24,91 @@
       font-size: 14px;
       padding-right: 8px;
     }
-    .select{
+    .select {
       text-align: center;
     }
-    .btn-box{
+    .btn-box {
       margin-top: 20px;
       width: 100vw;
       display: flex;
-    justify-content: center;
+      justify-content: center;
     }
   </style>
   <body>
     <div id="app">
-      <el-button  style="width:100vw;border-radius: 0;" type="primary">Generate remainning courses list</el-button>
+      <el-button
+        @click="getCheckedKeys"
+        style="width: 100vw; border-radius: 0"
+        type="primary"
+        >Generate remainning courses list</el-button
+      >
       <div class="custom-tree-container">
-      
         <div class="block">
           <div class="select">
-           
-          <el-select style="width:100%" v-model="value" filterable placeholder="请选择">
+            <el-select
+              style="width: 100%"
+              v-model="value"
+              filterable
+              placeholder="请选择"
+            >
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
           </div>
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-          <el-tree
-          :data="data"
-          show-checkbox
-          node-key="id"
-          default-expand-all
-          :expand-on-click-node="false"
-        >
-          <span class="custom-tree-node" slot-scope="{ node, data }">
-               <span>{{node.label}}</span>
-            
-             </span>
-        </el-tree>
-        </div>
-        <div class="block" style="border-left: 0;">
-          <p style="height: 38px;display: flex;justify-content: center;align-items: center; border-bottom: 1px solid #eff2f6;">given recommand order for the rest of course</p>
           <el-tree
             :data="data"
-          
+            show-checkbox
+            ref="tree"
+            @check="check"
             node-key="id"
             default-expand-all
             :expand-on-click-node="false"
           >
-
+            <span class="custom-tree-node" slot-scope="{ node, data }">
+              <span>{{node.label}}</span>
+            </span>
+          </el-tree>
+        </div>
+        <div class="block" style="border-left: 0">
+          <p
+            style="
+              height: 38px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              border-bottom: 1px solid #eff2f6;
+            "
+          >
+            given recommand order for the rest of course
+          </p>
+          <el-tree
+            :data="data"
+            :filter-node-method="filterNode"
+            node-key="id"
+            default-expand-all
+            ref="tree2"
+            :expand-on-click-node="false"
+          >
             <span class="custom-tree-node" slot-scope="{ node, data }">
               <span>{{ node.label }}</span>
               <el-button
-              type="text"
-              size="mini"
-              @click="() => remove(node, data)">
-              Delete
-            </el-button>
+                type="text"
+                size="mini"
+                @click="() => remove(node, data)"
+              >
+                Delete
+              </el-button>
             </span>
           </el-tree>
         </div>
       </div>
       <div class="btn-box">
-        <el-button style="margin-right:10px">SAVE</el-button>
+        <el-button style="margin-right: 10px">SAVE</el-button>
         <el-button type="primary">LOAD</el-button>
       </div>
     </div>
@@ -103,188 +119,263 @@
     new Vue({
       el: "#app",
       data: function () {
-        const data = 
-        [
-          {id: 1,label: 'Requirement a',
+        const data = [
+          {
+            id: 1,
+            label: "Requirement a",
             children: [
-            {id:11, label: "COMP-1400"},
-            {id:12, label: "COMP-1410",},
-            {id:13, label: "COMP-2120",},
-            {id:14, label:"COMP-2540",},
-            {id:15, label:"COMP-2560",},
-            {id:16, label:"COMP-2650",},
-            {id:17, label:"COMP-2660",},
-            {id:18, label:"COMP-3150",},
-            {id:19, label:"COMP-3220",},
-            {id:20, label:"COMP-3300",},
-            {id: 21, label: 'selection',
-              children: [
-                {id: 211,label: 'COMP-3340'}, 
-                {id: 212,label: 'COMP-3670'},
-              ],
-              count:1,
-            },
-            {id: 22, label: 'selection',
-              children: [ 
-              {id: 221, label: "COMP-XXX1"},
-              {id: 222, label: "COMP-XXX2"},
-              {id: 223, label: "COMP-XXX3"},
-              {id: 224, label: "COMP-XXX4"},
-              ],
-              count:2,
-            },
-            ]
-          }, 
-          {id: 2,label: 'Requirement b',
-            children: [
-              {id: 23, label: "STAT-2910"},
-              {id: 24, label: 'selection',
-              children: [
-                {id: 241,label: 'MATH-1250'}, 
-                {id: 242,label: 'MATH-1260'},
-              ],
-              count:1,
+              { id: 111, label: "COMP-1400" },
+              { id: 112, label: "COMP-1410" },
+              { id: 113, label: "COMP-2120" },
+              { id: 114, label: "COMP-2540" },
+              { id: 115, label: "COMP-2560" },
+              { id: 116, label: "COMP-2650" },
+              { id: 117, label: "COMP-2660" },
+              { id: 118, label: "COMP-3150" },
+              { id: 119, label: "COMP-3220" },
+              { id: 120, label: "COMP-3300" },
+              {
+                id: 21,
+                label: "selection",
+                children: [
+                  { id: 2211, label: "COMP-3340" },
+                  { id: 2212, label: "COMP-3670" },
+                ],
+                count: 1,
               },
-              {id: 25, label: 'selection',
-              children: [
-                {id: 251,label: 'MATH-1720'}, 
-                {id: 252,label: 'MATH-1760'},
-              ],
-              count:1,
+              {
+                id: 22,
+                label: "selection",
+                children: [
+                  { id: 2221, label: "COMP-XXX1" },
+                  { id: 2222, label: "COMP-XXX2" },
+                  { id: 2223, label: "COMP-XXX3" },
+                  { id: 2224, label: "COMP-XXX4" },
+                ],
+                count: 2,
               },
-            ]
-          }, 
-          {id: 3,label: 'Requirement c',
-            children: [
-              {id: 31, label: 'Arts/Languages',
-              children: [
-                {id: 241, label: "ARAB-2610"},
-                {id: 242, label: "ASIA-2620"},
-                {id: 243, label: "DRAM-1000"},
-                {id: 244, label: "DRAM-1300"},
-                {id: 245, label: "ENGL-1001"},
-                {id: 246, label: "ENGL-1005-01"},
-                {id: 247, label: "ENGL-1005-02"},
-                {id: 248, label: "FILM-1001"},
-                {id: 249, label: "FILM-1100"},
-                {id: 251, label: "FILM-1110"},
-                {id: 252, label: "GART-1200"},
-                {id: 253, label: "GART-1210"},
-                {id: 254, label: "GART-2040"},
-                {id: 255, label: "GART-2090"},
-                {id: 256, label: "GREK-1100"},
-                {id: 257, label: "GRST-1100"},
-                {id: 258, label: "GRST-2210"},
-                {id: 259, label: "GRST-2000"},
-                {id: 260, label: "INCS-1370"},
-                {id: 261, label: "INCS-2020"},
-                {id: 262, label: "INCS-2200"},
-                {id: 263, label: "JWST-2350"},
-                {id: 264, label: "MACS-1500"},
-                {id: 265, label: "PHIL-1100"},
-                {id: 266, label: "PHIL-1120"},
-                {id: 267, label: "PHIL-1290"},
-                {id: 268, label: "PHIL-1600"},
-                {id: 269, label: "WGST-1200"},
-                {id: 270, label: "WGST-1300"},
-                {id: 271, label: "GRMN-1020"},
-                {id: 272, label: "GRMN-2020"},
-                {id: 273, label: "ITLN-1020"},
-                {id: 274, label: "ITLN-2020"},
-                {id: 275, label: "LATN-1200"},
-                {id: 276, label: "SPAN-1020"},
-                {id: 277, label: "SPAN-2020"}
-              ],
-              count:1,
-              },
-              {id: 32, label: 'Social Sciences',
-              children: [
-                {id: 321, label: "ANZO-1600"},
-                {id: 322, label: "CMAF-1010"},
-                {id: 323, label: "HIST-1230"},
-                {id: 324, label: "HIST-1030"},
-                {id: 325, label: "HIST-1130"},
-                {id: 326, label: "HIST-2430"},
-                {id: 327, label: "HIST-2460"},
-                {id: 328, label: "POLS-1000"},
-                {id: 329, label: "POLS-1300"},
-                {id: 330, label: "POLS-1600"},
-                {id: 331, label: "POLS-2120"},
-                {id: 332, label: "POLS-2300"},
-                {id: 333, label: "PSYC-1070"},
-                {id: 334, label: "PSYC-1150"},
-                {id: 335, label: "PSYC-1160"},
-                {id: 336, label: "SACR-1000"},
-                {id: 337, label: "SACR-1100"},
-                {id: 338, label: "SJST-1000"},
-                {id: 339, label: "DISB-1000"},
-                {id: 340, label: "SJST-1400"},
-                {id: 341, label: "SOSC-1210"},
-                {id: 342, label: "SWRK-1170"},
-                {id: 343, label: "WGST-1000"},
-                {id: 344, label: "WGST-1200"},
-                {id: 345, label: "WGST-1300"},
-                {id: 346, label: "WORK-1000"}
-              ],
-              count:1,
-              },
-            ]
+            ],
           },
-          {id: 4,label: 'Requirement d',
+          {
+            id: 2,
+            label: "Requirement b",
             children: [
-              {id:41, label: "eleven other courses from any area of study, including Computer Science."}
-            ]
+              { id: 223, label: "STAT-2910" },
+              {
+                id: 224,
+                label: "selection",
+                children: [
+                  { id: 2241, label: "MATH-1250" },
+                  { id: 2242, label: "MATH-1260" },
+                ],
+                count: 1,
+              },
+              {
+                id: 25,
+                label: "selection",
+                children: [
+                  { id: 6251, label: "MATH-1720" },
+                  { id: 6252, label: "MATH-1760" },
+                ],
+                count: 1,
+              },
+            ],
+          },
+          {
+            id: 3,
+            label: "Requirement c",
+            children: [
+              {
+                id: 31,
+                label: "Arts/Languages",
+                children: [
+                  { id: 3241, label: "ARAB-2610" },
+                  { id: 3242, label: "ASIA-2620" },
+                  { id: 3243, label: "DRAM-1000" },
+                  { id: 3244, label: "DRAM-1300" },
+                  { id: 3245, label: "ENGL-1001" },
+                  { id: 3246, label: "ENGL-1005-01" },
+                  { id: 3247, label: "ENGL-1005-02" },
+                  { id: 3248, label: "FILM-1001" },
+                  { id: 3249, label: "FILM-1100" },
+                  { id: 3251, label: "FILM-1110" },
+                  { id: 3252, label: "GART-1200" },
+                  { id: 3253, label: "GART-1210" },
+                  { id: 3254, label: "GART-2040" },
+                  { id: 3255, label: "GART-2090" },
+                  { id: 3256, label: "GREK-1100" },
+                  { id: 3257, label: "GRST-1100" },
+                  { id: 3258, label: "GRST-2210" },
+                  { id: 3259, label: "GRST-2000" },
+                  { id: 3260, label: "INCS-1370" },
+                  { id: 3261, label: "INCS-2020" },
+                  { id: 3262, label: "INCS-2200" },
+                  { id: 3263, label: "JWST-2350" },
+                  { id: 3264, label: "MACS-1500" },
+                  { id: 3265, label: "PHIL-1100" },
+                  { id: 3266, label: "PHIL-1120" },
+                  { id: 3267, label: "PHIL-1290" },
+                  { id: 268, label: "PHIL-1600" },
+                  { id: 3269, label: "WGST-1200" },
+                  { id: 3270, label: "WGST-1300" },
+                  { id: 3271, label: "GRMN-1020" },
+                  { id: 272, label: "GRMN-2020" },
+                  { id: 3273, label: "ITLN-1020" },
+                  { id: 3274, label: "ITLN-2020" },
+                  { id: 3275, label: "LATN-1200" },
+                  { id: 3276, label: "SPAN-1020" },
+                  { id: 3277, label: "SPAN-2020" },
+                ],
+                count: 1,
+              },
+              {
+                id: 32,
+                label: "Social Sciences",
+                children: [
+                  { id: 4321, label: "ANZO-1600" },
+                  { id: 4322, label: "CMAF-1010" },
+                  { id: 4323, label: "HIST-1230" },
+                  { id: 4324, label: "HIST-1030" },
+                  { id: 4325, label: "HIST-1130" },
+                  { id: 4326, label: "HIST-2430" },
+                  { id: 4327, label: "HIST-2460" },
+                  { id: 4328, label: "POLS-1000" },
+                  { id: 4329, label: "POLS-1300" },
+                  { id: 4330, label: "POLS-1600" },
+                  { id: 4331, label: "POLS-2120" },
+                  { id: 4332, label: "POLS-2300" },
+                  { id: 4333, label: "PSYC-1070" },
+                  { id: 4334, label: "PSYC-1150" },
+                  { id: 4335, label: "PSYC-1160" },
+                  { id: 4336, label: "SACR-1000" },
+                  { id: 4337, label: "SACR-1100" },
+                  { id: 4338, label: "SJST-1000" },
+                  { id: 4339, label: "DISB-1000" },
+                  { id: 4340, label: "SJST-1400" },
+                  { id: 4341, label: "SOSC-1210" },
+                  { id: 4342, label: "SWRK-1170" },
+                  { id: 4343, label: "WGST-1000" },
+                  { id: 4344, label: "WGST-1200" },
+                  { id: 4345, label: "WGST-1300" },
+                  { id: 4346, label: "WORK-1000" },
+                ],
+                count: 1,
+              },
+            ],
+          },
+          {
+            id: 4,
+            label: "Requirement d",
+            children: [
+              {
+                id: 41,
+                label:
+                  "eleven other courses from any area of study, including Computer Science.",
+              },
+            ],
           },
         ];
-      return {
-        data: JSON.parse(JSON.stringify(data)),
-        data: JSON.parse(JSON.stringify(data)),
-        options: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }],
-        value: ''
-      }
+        return {
+          data: JSON.parse(JSON.stringify(data)),
+          data: JSON.parse(JSON.stringify(data)),
+          list: [],
+          options: [
+            {
+              value: "Computer Science",
+              label: "Computer Science",
+            },
+            {
+              value: "Bachelor of Computer Science (General)",
+              label: "Bachelor of Computer Science (General)",
+            },
+            {
+              value: "Bachelor of Computer Science (Honours)",
+              label: "Bachelor of Computer Science (Honours)",
+            },
+            {
+              value: "Bachelor of Computer Science (Honours applied Computing)",
+              label: "Bachelor of Computer Science (Honours applied Computing)",
+            },
+            {
+              value: "Bachelor of Science(Honours Computer Infomation Systems)",
+              label: "Bachelor of Science(Honours Computer Infomation Systems)",
+            },
+          ],
+          value:
+            "Bachelor of Science(Honours Computer Science with Software Engineering Specilization)",
+          label:
+            "Bachelor of Science(Honours Computer Science with Software Engineering Specilization)",
+        };
       },
       methods: {
-      append(data) {
-        const newChild = { id: id++, label: 'testtest', children: [] };
-        if (!data.children) {
-          this.$set(data, 'children', []);
-        }
-        data.children.push(newChild);
-      },
+        getCheckedKeys() {
+          this.list=[]
+          const keys = this.$refs.tree.getCheckedKeys();
+          keys.forEach((item) => {
+            const node = this.$refs.tree.getNode(item);
+            const parentId = node.parent.data.id;
+            this.list.push(item);
+            if (parentId) {
+              this.list.push(parentId);
+            }
+          });
+          if (keys.length === 0) {
+            this.list = [];
+          } else {
+            this.list = [...new Set(this.list)];
+          }
+          this.$refs.tree2.filter();
+        },
+        filterNode(value, data) {
+          let count = 0;
+          console.log(data, "data");
+          if (data.count) {
+            data.children.forEach((item) => {
+              if (this.list.includes(item.id)) {
+                count++;
+              }
+            });
+            // alert(count)
+            console.log(count, "123", data, count >= data.count);
+            if (count >= data.count) {
+              data.children.forEach((item) => {
+                this.list.push(item.id);
+              });
+              this.list = [...new Set(this.list)];
+              return false;
+            } else {
+              return false;
+            }
+          } else {
+            return !this.list.includes(data.id);
+          }
+        },
+        append(data) {
+          const newChild = { id: id++, label: "testtest", children: [] };
+          if (!data.children) {
+            this.$set(data, "children", []);
+          }
+          data.children.push(newChild);
+        },
 
-      remove(node, data) {
-        const parent = node.parent;
-        const children = parent.data.children || parent.data;
-        const index = children.findIndex(d => d.id === data.id);
-        children.splice(index, 1);
-      },
+        remove(node, data) {
+          const parent = node.parent;
+          const children = parent.data.children || parent.data;
+          const index = children.findIndex((d) => d.id === data.id);
+          children.splice(index, 1);
+        },
 
-      // renderContent(h, { node, data, store }) {
-      //   return (
-      //     <span class="custom-tree-node">
-      //       <span>{node.label}</span>
-      //       <span>
-      //         <el-button size="mini" type="text" on-click={ () => this.append(data) }>Append</el-button>
-      //         <el-button size="mini" type="text" on-click={ () => this.remove(node, data) }>Delete</el-button>
-      //       </span>
-      //     </span>);
-      // }
-    }
+        // renderContent(h, { node, data, store }) {
+        //   return (
+        //     <span class="custom-tree-node">
+        //       <span>{node.label}</span>
+        //       <span>
+        //         <el-button size="mini" type="text" on-click={ () => this.append(data) }>Append</el-button>
+        //         <el-button size="mini" type="text" on-click={ () => this.remove(node, data) }>Delete</el-button>
+        //       </span>
+        //     </span>);
+        // }
+      },
     });
   </script>
 </html>
