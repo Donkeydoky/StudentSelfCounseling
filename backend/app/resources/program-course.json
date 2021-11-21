@@ -2,7 +2,8 @@
 [
    {  
       "id": 99991,
-      "Bachelor of Computer Science (General)":
+      "program":"Bachelor of Computer Science (General)",
+      "Children":
       [{
          "id":1,
          "label":"Requirement a",
@@ -100,11 +101,11 @@
                "label":"selection",
                "children":[
                   {
-                     "id":241,
+                     "id":2411,
                      "label":"MATH-1250"
                   },
                   {
-                     "id":242,
+                     "id":2412,
                      "label":"MATH-1260"
                   }
                ],
@@ -130,6 +131,7 @@
       {
          "id":3,
          "label":"Requirement c",
+         "count": 2,
          "children":[
             {
                "id":31,
@@ -407,8 +409,8 @@
       }]
    },{  
       "id": 99992,
-      "Bachelor of Computer Science (honours)":
-      [{
+      "program": "Bachelor of Computer Science (honours)",
+      "Children":[{
          "id":1,
          "label":"Requirement a",
          "color": "red",
@@ -443,53 +445,65 @@
             },
             {
                "id":18,
-               "label":"COMP-3150"
+               "label":"COMP-3110"
             },
             {
                "id":19,
-               "label":"COMP-3220"
+               "label":"COMP-3150"
             },
             {
                "id":20,
-               "label":"COMP-3300"
+               "label":"COMP-3220"
             },
             {
-               "id":21,
+               "id": 21,
+               "label": "COMP-3300"
+            },
+            {
+               "id": 22,
+               "label": "COMP-3540"
+            },
+            {
+               "id": 23,
+               "label": "COMP-3670"
+            },
+            {
+               "id": 24,
+               "label": "COMP-4400"
+            },
+            {
+               "id": 25,
+               "label": "COMP-4540"
+            },
+            {
+               "id":211,
                "label":"selection",
                "children":[
                   {
-                     "id":211,
-                     "label":"COMP-3340"
+                     "id":2111,
+                     "label":"COMP-4960"
                   },
                   {
-                     "id":212,
-                     "label":"COMP-3670"
+                     "id":2112,
+                     "label":"COMP-4990"
                   }
                ],
                "count":1
             },
             {
-               "id":22,
+               "id":212,
                "label":"selection",
                "children":[
                   {
-                     "id":221,
-                     "label":"COMP-XXX1"
+                     "id":2121,
+                     "label":"COMP-3XX0"
                   },
                   {
-                     "id":222,
-                     "label":"COMP-XXX2"
-                  },
-                  {
-                     "id":223,
-                     "label":"COMP-XXX3"
-                  },
-                  {
-                     "id":224,
-                     "label":"COMP-XXX4"
+                     "id":2122,
+                     "label":"COMP-4XX0"
                   }
                ],
-               "count":2
+               "count":1
             }
          ]
       },
@@ -506,11 +520,11 @@
                "label":"selection",
                "children":[
                   {
-                     "id":241,
+                     "id":2411,
                      "label":"MATH-1250"
                   },
                   {
-                     "id":242,
+                     "id":2412,
                      "label":"MATH-1260"
                   }
                ],
