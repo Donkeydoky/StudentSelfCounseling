@@ -2,85 +2,64 @@ const express        = require('express');
 const MongoClient    = require('mongodb').MongoClient;
 const app            = express();
 const db            = require("./config/db");
+const bodyParser    = require("body-parser");
 const path = require('path')
 var fs = require("fs");
 
-const port = 8000;
-
+app.use(bodyParser.json());
 app.use(express.urlencoded({extended: true}));
 
-require('./app/routes')(app, {});app.listen(
-    port, () => {  
-        console.log('We are live on ' + port);
-    }
-);
-
-const client = new MongoClient(db.url);
-app.route('./app/degree').get(function(req, res) 
-    {
-        client.connect(url, function(err, db) {
-            var cursor = db.collection('degree').find({}).toArray();
-            //noinspection JSDeprecatedSymbols
-            cursor.each(function(err, item) {
-
-                if (item != null) {
-                    str = str + "    degree id " + item._id + "</br>";
-                }
-            });
-            res.send(str);
-            console.log(str);
-            db.close();
-        });
-    });
-
-// async function run() {
-//   try {
-//     await client.connect();
-//     const database = client.db("studentSelfConselling");
-//     const movies = database.collection("degree");
-//     // Query for a movie that has the title 'The Room'
-//     const query = { "Degree name": "The Room" };
-//     const options = {
-//       // sort matched documents in descending order by rating
-//       sort: { "imdb.rating": -1 },
-//       // Include only the `title` and `imdb` fields in the returned document
-//       projection: { _id: 0, title: 1, imdb: 1 },
-//     };
-//     const movie = await movies.findOne(query);
-//     // since this method returns the matched document, not a cursor, print it directly
-//     console.log(movie);
-//     const findResult = await movies.find({}).toArray();
-//     console.log(findResult[1]);
-//     var str = "";
-//     findResult.forEach(function(err, item) {
-
-//         if (item != null) {
-//             str = str + "    degree id " + item._id + "</br>";
-//         }
-//     });
-//     console.log(str)
-//   } finally {
-//     await client.close();
-//   }
-// }
-// run().catch(console.dir);
-
- app.get('/degree', function (req, res){
-     fs.readFile(__dirname + "/" + "/degree.json", 'utf8', function(err, data) {
-        console.log( data );
-        res.end(data);
-     })
- })
- 
- var server = app.listen(8081, function () {
+var server = app.listen(8001, function () {
     var host = server.address().address
     var port = server.address().port
     console.log("Example app listening at http://%s:%s", host, port)
     app.use(express.static('../frontend'))
  })
 
-function err(status, msg) {
-        var err = new Error(msg);
-        err.status = status;
-        return err;
-}
+app.get('/api/degree', function (req, res){
+     fs.readFile(__dirname + "/" + "/degree.json", 'utf8', function(err, data) {
+        console.log( data );
+        res.end(data);
+     })
+ })
+
+app.get('/api/program/:id', function (req, res){
+     const { id } = req.params;
+     fs.readFile(__dirname+"/"+"/program-course.json", 'utf8', function (err, data){
+         var programs = JSON.parse(data);
+         const program = programs.filter(item=>item.id==id);
+         var pro = JSON.stringify(program);
+         console.log(programs);
+         res.end(pro);
+     })
+ })
+
+ var findById = function(collection, _id, cb){
+    var coll = collection.slice( 0 ); // create a clone
+
+    (function _loop( data ) {
+        if( data._id === _id ) {
+            cb.apply( null, [ data ] );
+        }
+        else if( coll.length ) {
+            setTimeout( _loop.bind( null, coll.shift() ), 25 );
+        }
+    }( coll.shift() ));
+};
+//  const client = new MongoClient(db.url);
+//  app.route('./app/degree').get(function(req, res) 
+//      {
+//          client.connect(url, function(err, db) {
+//              var cursor = db.collection('degree').find({}).toArray();
+//              //noinspection JSDeprecatedSymbols
+//              cursor.each(function(err, item) {
+ 
+//                  if (item != null) {
+//                      str = str + "    degree id " + item._id + "</br>";
+//                  }
+//              });
+//              res.send(str);
+//              console.log(str);
+//              db.close();
+//          });
+//      });
