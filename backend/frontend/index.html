@@ -46,6 +46,7 @@
         <div class="block">
           <div class="select">
             <el-select
+              @change="change"
               style="width: 100%"
               v-model="value"
               filterable
@@ -53,9 +54,9 @@
             >
               <el-option
                 v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                :key="item.id"
+                :label="item.Programs"
+                :value="item.id"
               >
               </el-option>
             </el-select>
@@ -66,11 +67,14 @@
             ref="tree"
             @check="check"
             node-key="id"
+            :default-checked-keys="keys"
             default-expand-all
             :expand-on-click-node="false"
           >
             <span class="custom-tree-node" slot-scope="{ node, data }">
-              <span>{{node.label}}</span>
+              <span :style="{
+                color:node.color
+              }"> {{node.label}}</span>
             </span>
           </el-tree>
         </div>
@@ -96,20 +100,33 @@
           >
             <span class="custom-tree-node" slot-scope="{ node, data }">
               <span>{{ node.label }}</span>
-              <el-button
-                type="text"
-                size="mini"
-                @click="() => remove(node, data)"
-              >
-                Delete
-              </el-button>
             </span>
           </el-tree>
         </div>
       </div>
       <div class="btn-box">
-        <el-button style="margin-right: 10px">SAVE</el-button>
-        <el-button type="primary">LOAD</el-button>
+        <el-button @click="save" style="margin-right: 10px">SAVE</el-button>
+        <!-- <form
+          ref="uploadForm"
+          id="uploadForm"
+          action="http://localhost:8001/upload"
+          method="post"
+          enctype="multipart/form-data"
+        >
+          <input type="file" name="sampleFile" />
+          <input type="submit" value="Upload!" />
+        </form> -->
+        <el-upload
+          class="upload-demo"
+          ref="upload"
+          action="/upload"
+          name="sampleFile"
+          :on-success="onSuccess"
+          :auto-upload="true"
+          :show-file-list="false"
+        >
+          <el-button type="primary">LOAD</el-button>
+        </el-upload>
       </div>
     </div>
   </body>
@@ -276,40 +293,84 @@
           },
         ];
         return {
-          data: JSON.parse(JSON.stringify(data)),
-          data: JSON.parse(JSON.stringify(data)),
+          data: [],
+          keys: [],
           list: [],
-          options: [
-            {
-              value: "Computer Science",
-              label: "Computer Science",
-            },
-            {
-              value: "Bachelor of Computer Science (General)",
-              label: "Bachelor of Computer Science (General)",
-            },
-            {
-              value: "Bachelor of Computer Science (Honours)",
-              label: "Bachelor of Computer Science (Honours)",
-            },
-            {
-              value: "Bachelor of Computer Science (Honours applied Computing)",
-              label: "Bachelor of Computer Science (Honours applied Computing)",
-            },
-            {
-              value: "Bachelor of Science(Honours Computer Infomation Systems)",
-              label: "Bachelor of Science(Honours Computer Infomation Systems)",
-            },
-          ],
-          value:
-            "Bachelor of Science(Honours Computer Science with Software Engineering Specilization)",
-          label:
-            "Bachelor of Science(Honours Computer Science with Software Engineering Specilization)",
+          options: [],
+          value: "",
         };
       },
+      mounted() {
+        fetch("/api/degree")
+          .then((response) => {
+            return response.json();
+          })
+          .then((myJson) => {
+            this.options = myJson[0].Children;
+            console.log(this.options);
+          });
+      },
+
       methods: {
+        onSuccess(response) {
+          console.log(response, "response");
+          this.data=response.list1
+          this.keys = response.list2;
+        
+          console.log(   this.keys , "   this.keys ");
+        },
+        save() {
+          // this.list = [];
+          const keys = this.$refs.tree.getCheckedKeys();
+          // keys.forEach((item) => {
+          //   const node = this.$refs.tree.getNode(item);
+          //   const parentId = node.parent.data.id;
+          //   this.list.push(item);
+          //   if (parentId) {
+          //     this.list.push(parentId);
+          //   }
+          // });
+          // if (keys.length === 0) {
+          //   this.list = [];
+          // } else {
+          //   this.list = [...new Set(this.list)];
+          // }
+          console.log(this.list);
+          fetch("/save", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              list1: this.data,
+              list2:keys
+            }),
+          })
+            .then((response) => {
+              console.log(response, "myJson");
+              return response.json();
+            })
+            .then((myJson) => {
+              var a = document.createElement("a");
+              a.href = myJson.path;
+              a.download = "tempfile.json";
+              a.click();
+              console.log(myJson, "myJson");
+              window.URL.revokeObjectURL(myJson.path);
+            });
+        },
+        change() {
+          console.log(this.value, "0909");
+          fetch("/api/program/" + this.value)
+            .then((response) => {
+              return response.json();
+            })
+            .then((myJson) => {
+              this.data = myJson;
+            });
+        },
         getCheckedKeys() {
-          this.list=[]
+          this.list = [];
           const keys = this.$refs.tree.getCheckedKeys();
           keys.forEach((item) => {
             const node = this.$refs.tree.getNode(item);
