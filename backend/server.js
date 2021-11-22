@@ -23,8 +23,8 @@ app.get("/api/degree", function (req, res) {
     "utf8",
     function (err, data) {
       degree = JSON.parse(data);
-      console.log(data);
-      console.log(degree);
+      // console.log(data);
+      // console.log(degree);
       res.end(data);
     }
   );
@@ -38,9 +38,9 @@ app.get("/api/program/:id", function (req, res) {
     function (err, data) {
       var programs = JSON.parse(data);
       const program = programs.filter((item) => item.id == id);
-      console.log(program[0]["Children"]);
+      // console.log(program[0]["Children"]);
       var pro = JSON.stringify(program[0]["Children"]);
-      console.log(pro);
+      // console.log(pro);
       res.end(pro);
     }
   );
@@ -55,7 +55,7 @@ app.post("/save", (req, res) => {
     __dirname + "/" + "app/resources/temp/" + DownloadFile,
     data,
     function (err) {
-      if (err) return consolo.log(err);
+      if (err) return console.log(err);
       console.log("tempfile.json saved");
     }
   );
@@ -72,7 +72,7 @@ app.get("/save-get", (req, res) => {
 app.use(fileUpload());
 // upload file and save it to the local server, then parse it to send back
 app.post("/upload", function (req, res) {
-  console.log(req.file);
+  console.log(req.files.name);
   let sampleFile;
   let uploadPath;
 
@@ -93,8 +93,8 @@ app.post("/upload", function (req, res) {
       "utf8",
       function (err, data) {
         degree = JSON.parse(data);
-        console.log(data);
-        console.log(degree);
+        // console.log(data);
+        // console.log(degree);
         res.end(data);
       }
     );
@@ -109,8 +109,8 @@ app.get("/upload-get", function (req, res) {
     "utf8",
     function (err, data) {
       degree = JSON.parse(data);
-      console.log(data);
-      console.log(degree);
+      //console.log(data);
+      //console.log(degree);
       res.end(data);
     }
   );
